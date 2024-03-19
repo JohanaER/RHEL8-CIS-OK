@@ -235,7 +235,7 @@ Massive thanks to the fantastic community and all its members.
 This includes a huge thanks and credit to the original authors and maintainers.
 Josh Springer, Daniel Shepherd, Bas Meijeri, James Cassell, Mike Renfro, DFed, George Nalen, Mark Bolwell
 
-## pasos para servidor nuevo:
+## Pasos para servidor nuevo:
 los siguientes pasos se sugieren para un servidor nuevo sin configuraciones para evitar futuros errores :
 
     1  subscription-manager register 
@@ -250,7 +250,7 @@ ansible-galaxy collection install dsglaser.cis_security
 
 ansible-galaxy collection install ansible.posix
 
-**instalar goss:**
+**Instalar goss:**
 
 curl -L https://github.com/goss-org/goss/releases/latest/download/goss-linux-amd64 -o /usr/local/bin/goss
 
@@ -263,8 +263,11 @@ chmod +rx /usr/local/bin/dgoss
 **EPEL para rhel 8**
 
 #subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+
 #dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
 #yum install python3-jmespath 
+
 #yum install python3.11-jmespath
 
 **Instalar el rol desde github**
@@ -274,25 +277,36 @@ ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
 **NOTA** : Puede eliminar el rol completo con el siguiente comando (si así lo desea)
 rm -rf /root/.ansible/roles/RHEL8-CIS-OK
 
-**crear audit.yml y site.yml, estos se crearon en /root/site.yml y /root/audit.yml** 
+**Crear audit.yml y site.yml, estos se crearon en /root/site.yml y /root/audit.yml** 
 
-**crear audit.yml** 
+**Crear audit.yml** 
 
 - name: RHEL8 CIS Audit
+  
   hosts: all
+  
   become: true
+  
   roles:
+  
     - name: "RHEL8-CIS-OK"
+     
       vars:
+      
         setup_audit: true
+      
         run_audit: true
 
-**crear site.yml**
+**Crear site.yml**
 
 - name: Run RHEL8 CIS hardening
+  
   hosts: all
+  
   become: true
+  
   roles:
+  
       - role: "RHEL8-CIS-OK"
 
   
@@ -306,7 +320,7 @@ ansible-playbook -i "localhost," -c local audit.yml
 
 [root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --list-tags
 
-**ejecutar una regla en especifico** 
+**Ejecutar una regla en especifico** 
 
 [root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --tags rule_1.1.1.3
 
