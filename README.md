@@ -247,7 +247,6 @@ los siguientes pasos se sugieren para un servidor nuevo sin configuraciones para
 **Instalar las colecciones necesarias especificas:**
 
 ansible-galaxy collection install dsglaser.cis_security
-
 ansible-galaxy collection install ansible.posix
 
 **instalar goss:**
@@ -261,14 +260,12 @@ chmod +rx /usr/local/bin/dgoss
 
 **EPEL para rhel 8**
 subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
-
 dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-
 yum install python3-jmespath 
-
 yum install python3.11-jmespath
  
 **Instalar el rol desde github**
+
 ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
 
 **NOTA** : Puede eliminar el rol completo con el siguiente comando (si así lo desea)
@@ -289,7 +286,6 @@ rm -rf /root/.ansible/roles/RHEL8-CIS-OK
         run_audit: true
 
 **crear site.yml**
----
 - name: Run RHEL8 CIS hardening
   hosts: all
   become: true
