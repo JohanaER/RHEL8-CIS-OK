@@ -278,34 +278,24 @@ ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
 rm -rf /root/.ansible/roles/RHEL8-CIS-OK
 
 **crear audit.yml y site.yml, estos se crearon en /root/site.yml y /root/audit.yml** 
----
+
 **crear audit.yml** 
 
 - name: RHEL8 CIS Audit
-  
   hosts: all
-  
   become: true
-  
   roles:
-  
     - name: "RHEL8-CIS-OK"
-      
       vars:
-      
         setup_audit: true
-      
         run_audit: true
 
 **crear site.yml**
+
 - name: Run RHEL8 CIS hardening
-  
   hosts: all
-  
   become: true
-
   roles:
-
       - role: "RHEL8-CIS-OK"
 
   
