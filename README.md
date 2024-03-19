@@ -6,31 +6,6 @@
 
 ---
 
-![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
-![Stars](https://img.shields.io/github/stars/ansible-lockdown/RHEL8-CIS?label=Repo%20Stars&style=social)
-![Forks](https://img.shields.io/github/forks/ansible-lockdown/RHEL8-CIS?style=social)
-![followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
-[![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
-
-![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
-
-![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
-![Release Tag](https://img.shields.io/github/v/release/ansible-lockdown/RHEL8-CIS)
-![Release Date](https://img.shields.io/github/release-date/ansible-lockdown/RHEL8-CIS)
-
-[![Main Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/main_pipeline_validation.yml)
-
-[![Devel Pipeline Status](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml/badge.svg?)](https://github.com/ansible-lockdown/RHEL8-CIS/actions/workflows/devel_pipeline_validation.yml)
-![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/RHEL8-CIS/devel?color=dark%20green&label=Devel%20Branch%20Commits)
-
-![Issues Open](https://img.shields.io/github/issues-raw/ansible-lockdown/RHEL8-CIS?label=Open%20Issues)
-![Issues Closed](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/RHEL8-CIS?label=Closed%20Issues&&color=success)
-![Pull Requests](https://img.shields.io/github/issues-pr/ansible-lockdown/RHEL8-CIS?label=Pull%20Requests)
-
-![License](https://img.shields.io/github/license/ansible-lockdown/RHEL8-CIS?label=License)
-
----
-
 ## Looking for support?
 
 [Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_RH8_cis)
@@ -54,7 +29,10 @@ This role was developed against a clean install of the Operating System. If you 
 To use release version please point to main branch and relevant release for the cis benchmark you wish to work with.
 
 If moving across major releases e.g. v2.0.0 - v3.0.0 there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
-
+```txt
+**Este rol esta modificado solo para algunas reglas especificas las cuales son las siguientes : 
+rule_1.1.1.3, rule_1.1.2.1.1, rule_1.1.2.3.3, rule_1.1.2.4.2, rule_1.1.2.4.3, rule_1.1.2.6.2, rule_1.1.2.6.3, rule_1.1.2.6.4, rule_1.1.2.7.2, rule_1.1.2.7.3, rule_1.1.2.7.4, rule_1.3.2, rule_1.4.2, rule_1.4.3, rule_1.4.4, rule_1.5.1.2, rule_1.5.1.6, rule_1.6.1, rule_1.6.2, rule_1.7.1, rule_1.7.4, rule_1.8.6, rule_2.1.2, rule_3.4.2.2, rule_3.4.2.5, rule_4.2.10, rule_4.2.11, rule_4.2.13, rule_4.2.14, rule_4.2.19, rule_4.2.20, rule_4.2.4, rule_4.2.7, rule_4.2.9, rule_4.3.6, rule_4.3.7, rule_4.4.2.1, rule_4.4.3.2.1, rule_4.4.3.2.4, rule_4.4.3.2.5, rule_4.4.3.2.7, rule_4.4.3.3.1, rule_4.4.3.3.2, rule_4.4.3.3.3, rule_4.5.1.2, rule_4.5.1.3, rule_4.5.1.4, rule_4.5.2.3, rule_4.5.3.2, rule_5.1.1.4, rule_5.1.2.1.4, rule_5.1.2.3, rule_5.1.2.4, rule_5.2.4.1, rule_5.2.4.2, rule_5.2.4.3, rule_5.2.4.4, rule_5.2.4.5, rule_5.2.4.6, rule_5.2.4.7, rule_5.3.1, rule_5.3.2, rule_5.3.3**
+```
 ---
 
 ## Matching a security Level for CIS
@@ -179,6 +157,41 @@ rhel8cis_rule_1_1_3_3
 
 Almalinux BaseOS, EPEL and many cloud providers repositories, do not allow repo_gpgcheck on rule_1.2.3 this will cause issues during the playbook unless or a workaround is found.
 
+-------------------
+**Error rule 1.2.5**
+```txt
+TASK [RHEL8-CIS : 1.2.5 | PATCH | Ensure updates, patches, and additional security software are installed | Patch] ***
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to download metadata for repo 'epel': GPG verification is enabled, but GPG signature is not available. This may be an error or the repository does not support GPG verification: Status code: 404 for http://mirrors.upr.edu/epel/8/Everything/x86_64/repodata/repomd.xml.asc (IP: 136.145.244.40)", "rc": 1, "results": []}
+```
+solucion: fuente : https://access.redhat.com/solutions/7019126
+
+**Modificacion del archivo /root/.ansible/roles/RHEL8-CIS/tasks/section_1/cis_1.2.x.yml**
+
+Linea 52 
+```txt
+#line: line: gpgcheck=1 --> line: gpgcheck=0 Modificacion
+```
+Linea 85
+```txt
+#line: line: gpgcheck=1 --> line: gpgcheck=0 Modificacion
+```
+archivo del server 
+```bash
+vi /etc/dnf/dnf.conf
+```
+```txt
+[main]
+gpgcheck=0
+installonly_limit=3
+clean_requirements_on_remove=True
+best=True
+skip_if_unavailable=False
+repo_gpgcheck=0
+```
+
+------------------
+
+
 ## Pipeline Testing
 
 uses:
@@ -201,7 +214,7 @@ molecule verify -s localhost
 ```
 
 local testing uses:
-
+- ansible 2.15.3 **usado el 19/03/2024
 - ansible 2.13.3
 - molecule 4.0.1
 - molecule-docker 2.0.0
@@ -218,9 +231,84 @@ pre-commit run
 ```
 
 ## Credits and Thanks
-
 Massive thanks to the fantastic community and all its members.
 This includes a huge thanks and credit to the original authors and maintainers.
 Josh Springer, Daniel Shepherd, Bas Meijeri, James Cassell, Mike Renfro, DFed, George Nalen, Mark Bolwell
-# CIS-RHEL8
-# CISPRUEBA
+
+## Pasos para servidor nuevo:
+los siguientes pasos se sugieren para un servidor nuevo sin configuraciones para evitar futuros errores :
+
+    1  subscription-manager register 
+    2  subscription-manager refresh 
+    3  subscription-manager attach --auto 
+    4  dnf install python3
+    5  yum install ansible-core
+    6  ansible --version
+    
+**Instalar las colecciones necesarias especificas:**
+```txt
+ansible-galaxy collection install dsglaser.cis_security
+ansible-galaxy collection install ansible.posix
+```
+**Instalar goss:**
+```txt
+curl -L https://github.com/goss-org/goss/releases/latest/download/goss-linux-amd64 -o /usr/local/bin/goss
+chmod +rx /usr/local/bin/goss
+curl -L https://github.com/goss-org/goss/releases/latest/download/dgoss -o /usr/local/bin/dgoss
+chmod +rx /usr/local/bin/dgoss
+```
+**EPEL para rhel 8**
+```txt
+subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+yum install python3-jmespath 
+yum install python3.11-jmespath
+```
+**Instalar el rol desde github**
+```sh
+ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
+```
+**NOTA** : Puede eliminar el rol completo con el siguiente comando (si así lo desea)
+rm -rf /root/.ansible/roles/RHEL8-CIS-OK
+
+**Crear audit.yml y site.yml, estos se crearon en /root/site.yml y /root/audit.yml** 
+
+**Crear audit.yml** 
+```yml
+---
+- name: RHEL8 CIS Audit
+  hosts: all
+  become: true
+  roles:
+    - name: "RHEL8-CIS-OK"
+      vars:
+        setup_audit: true
+        run_audit: true
+```
+**Crear site.yml**
+```yml
+---
+- name: Run RHEL8 CIS hardening
+  hosts: all
+  become: true
+  roles:
+      - role: "RHEL8-CIS-OK"
+```
+  
+**Ejecutar auditoria** 
+```txt
+cd /root/.ansible/roles/RHEL8-CIS-OK
+ansible-playbook -i "localhost," -c local audit.yml
+```
+**Ver las reglas y tareas que se pueden ejecutarán**
+```txt
+[root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --list-tags
+```
+**Ejecutar una regla en especifico** 
+```txt
+[root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --tags rule_1.1.1.3
+```
+**Ejecutar el rol completo**
+```txt
+[root@cis ~]# ansible-playbook -i "localhost," -c local site.yml
+```
