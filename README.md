@@ -183,7 +183,7 @@ best=True
 
 skip_if_unavailable=False
 
-## repo_gpgcheck=0
+**repo_gpgcheck=0**
 
 
 ------------------
