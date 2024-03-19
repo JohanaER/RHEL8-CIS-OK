@@ -29,10 +29,10 @@ This role was developed against a clean install of the Operating System. If you 
 To use release version please point to main branch and relevant release for the cis benchmark you wish to work with.
 
 If moving across major releases e.g. v2.0.0 - v3.0.0 there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
-
+```bash
 **Este rol esta modificado solo para algunas reglas especificas las cuales son las siguientes : 
 rule_1.1.1.3, rule_1.1.2.1.1, rule_1.1.2.3.3, rule_1.1.2.4.2, rule_1.1.2.4.3, rule_1.1.2.6.2, rule_1.1.2.6.3, rule_1.1.2.6.4, rule_1.1.2.7.2, rule_1.1.2.7.3, rule_1.1.2.7.4, rule_1.3.2, rule_1.4.2, rule_1.4.3, rule_1.4.4, rule_1.5.1.2, rule_1.5.1.6, rule_1.6.1, rule_1.6.2, rule_1.7.1, rule_1.7.4, rule_1.8.6, rule_2.1.2, rule_3.4.2.2, rule_3.4.2.5, rule_4.2.10, rule_4.2.11, rule_4.2.13, rule_4.2.14, rule_4.2.19, rule_4.2.20, rule_4.2.4, rule_4.2.7, rule_4.2.9, rule_4.3.6, rule_4.3.7, rule_4.4.2.1, rule_4.4.3.2.1, rule_4.4.3.2.4, rule_4.4.3.2.5, rule_4.4.3.2.7, rule_4.4.3.3.1, rule_4.4.3.3.2, rule_4.4.3.3.3, rule_4.5.1.2, rule_4.5.1.3, rule_4.5.1.4, rule_4.5.2.3, rule_4.5.3.2, rule_5.1.1.4, rule_5.1.2.1.4, rule_5.1.2.3, rule_5.1.2.4, rule_5.2.4.1, rule_5.2.4.2, rule_5.2.4.3, rule_5.2.4.4, rule_5.2.4.5, rule_5.2.4.6, rule_5.2.4.7, rule_5.3.1, rule_5.3.2, rule_5.3.3**
-
+```
 ---
 
 ## Matching a security Level for CIS
@@ -244,36 +244,30 @@ los siguientes pasos se sugieren para un servidor nuevo sin configuraciones para
     4  dnf install python3
     5  yum install ansible-core
     6  ansible --version
+    
 **Instalar las colecciones necesarias especificas:**
-
+```txt
 ansible-galaxy collection install dsglaser.cis_security
-
 ansible-galaxy collection install ansible.posix
-
+```
 **Instalar goss:**
-
+```txt
 curl -L https://github.com/goss-org/goss/releases/latest/download/goss-linux-amd64 -o /usr/local/bin/goss
-
 chmod +rx /usr/local/bin/goss
-
 curl -L https://github.com/goss-org/goss/releases/latest/download/dgoss -o /usr/local/bin/dgoss
- 
 chmod +rx /usr/local/bin/dgoss
-
+```
 **EPEL para rhel 8**
-
-#subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
-
-#dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-
-#yum install python3-jmespath 
-
-#yum install python3.11-jmespath
-
+```txt
+subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+yum install python3-jmespath 
+yum install python3.11-jmespath
+```
 **Instalar el rol desde github**
-
+```txt
 ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
-
+```
 **NOTA** : Puede eliminar el rol completo con el siguiente comando (si así lo desea)
 rm -rf /root/.ansible/roles/RHEL8-CIS-OK
 
@@ -291,33 +285,28 @@ rm -rf /root/.ansible/roles/RHEL8-CIS-OK
         run_audit: true
 ```
 **Crear site.yml**
-
+```yml
 - name: Run RHEL8 CIS hardening
-  
   hosts: all
-  
   become: true
-  
   roles:
-  
       - role: "RHEL8-CIS-OK"
-
+```
   
 **Ejecutar auditoria** 
-
+```txt
 cd /root/.ansible/roles/RHEL8-CIS-OK
-
 ansible-playbook -i "localhost," -c local audit.yml
-
+```
 **Ver las reglas y tareas que se pueden ejecutarán**
-
+```txt
 [root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --list-tags
-
+```
 **Ejecutar una regla en especifico** 
-
+```txt
 [root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --tags rule_1.1.1.3
-
+```
 **Ejecutar el rol completo**
-
+```txt
 [root@cis ~]# ansible-playbook -i "localhost," -c local site.yml
-
+```
