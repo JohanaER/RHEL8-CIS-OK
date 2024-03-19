@@ -263,11 +263,8 @@ chmod +rx /usr/local/bin/dgoss
 **EPEL para rhel 8**
 
 #subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
-
 #dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-
 #yum install python3-jmespath 
-
 #yum install python3.11-jmespath
 
 **Instalar el rol desde github**
