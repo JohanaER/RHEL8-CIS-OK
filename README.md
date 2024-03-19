@@ -154,6 +154,35 @@ rhel8cis_rule_1_1_3_3
 
 Almalinux BaseOS, EPEL and many cloud providers repositories, do not allow repo_gpgcheck on rule_1.2.3 this will cause issues during the playbook unless or a workaround is found.
 
+-------------------
+TASK [RHEL8-CIS : 1.2.5 | PATCH | Ensure updates, patches, and additional security software are installed | Patch] ***
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to download metadata for repo 'epel': GPG verification is enabled, but GPG signature is not available. This may be an error or the repository does not support GPG verification: Status code: 404 for http://mirrors.upr.edu/epel/8/Everything/x86_64/repodata/repomd.xml.asc (IP: 136.145.244.40)", "rc": 1, "results": []}
+
+solucion: fuente : https://access.redhat.com/solutions/7019126
+
+*Modificacion del archivo /root/.ansible/roles/RHEL8-CIS/tasks/section_1/cis_1.2.x.yml
+
+Linea 52 
+#line: line: gpgcheck=1 --> line: gpgcheck=0 Modificacion
+
+Linea 85
+#line: line: gpgcheck=1 --> line: gpgcheck=0 Modificacion
+
+archivo del server 
+vi /etc/dnf/dnf.conf
+
+[main]
+gpgcheck=0
+installonly_limit=3
+clean_requirements_on_remove=True
+best=True
+skip_if_unavailable=False
+repo_gpgcheck=0
+
+
+------------------
+
+
 ## Pipeline Testing
 
 uses:
