@@ -30,6 +30,9 @@ To use release version please point to main branch and relevant release for the 
 
 If moving across major releases e.g. v2.0.0 - v3.0.0 there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
 
+**Este rol esta modificado solo para algunas reglas especificas las cuales son las siguientes : 
+rule_1.1.1.3, rule_1.1.2.1.1, rule_1.1.2.3.3, rule_1.1.2.4.2, rule_1.1.2.4.3, rule_1.1.2.6.2, rule_1.1.2.6.3, rule_1.1.2.6.4, rule_1.1.2.7.2, rule_1.1.2.7.3, rule_1.1.2.7.4, rule_1.3.2, rule_1.4.2, rule_1.4.3, rule_1.4.4, rule_1.5.1.2, rule_1.5.1.6, rule_1.6.1, rule_1.6.2, rule_1.7.1, rule_1.7.4, rule_1.8.6, rule_2.1.2, rule_3.4.2.2, rule_3.4.2.5, rule_4.2.10, rule_4.2.11, rule_4.2.13, rule_4.2.14, rule_4.2.19, rule_4.2.20, rule_4.2.4, rule_4.2.7, rule_4.2.9, rule_4.3.6, rule_4.3.7, rule_4.4.2.1, rule_4.4.3.2.1, rule_4.4.3.2.4, rule_4.4.3.2.5, rule_4.4.3.2.7, rule_4.4.3.3.1, rule_4.4.3.3.2, rule_4.4.3.3.3, rule_4.5.1.2, rule_4.5.1.3, rule_4.5.1.4, rule_4.5.2.3, rule_4.5.3.2, rule_5.1.1.4, rule_5.1.2.1.4, rule_5.1.2.3, rule_5.1.2.4, rule_5.2.4.1, rule_5.2.4.2, rule_5.2.4.3, rule_5.2.4.4, rule_5.2.4.5, rule_5.2.4.6, rule_5.2.4.7, rule_5.3.1, rule_5.3.2, rule_5.3.3**
+
 ---
 
 ## Matching a security Level for CIS
@@ -211,7 +214,7 @@ molecule verify -s localhost
 ```
 
 local testing uses:
-
+- ansible 2.15.3 **usado el 19/03/2024
 - ansible 2.13.3
 - molecule 4.0.1
 - molecule-docker 2.0.0
@@ -228,9 +231,83 @@ pre-commit run
 ```
 
 ## Credits and Thanks
-
 Massive thanks to the fantastic community and all its members.
 This includes a huge thanks and credit to the original authors and maintainers.
 Josh Springer, Daniel Shepherd, Bas Meijeri, James Cassell, Mike Renfro, DFed, George Nalen, Mark Bolwell
-# CIS-RHEL8
-# CISPRUEBA
+
+## pasos para servidor nuevo:
+los siguientes pasos se sugieren para un servidor nuevo sin configuraciones para evitar futuros errores :
+
+    1  subscription-manager register 
+    2  subscription-manager refresh 
+    3  subscription-manager attach --auto 
+    4  dnf install python3
+    5  yum install ansible-core
+    6  ansible --version
+**Instalar las colecciones necesarias especificas:**
+
+ansible-galaxy collection install dsglaser.cis_security
+
+ansible-galaxy collection install ansible.posix
+
+**instalar goss:**
+curl -L https://github.com/goss-org/goss/releases/latest/download/goss-linux-amd64 -o /usr/local/bin/goss
+
+chmod +rx /usr/local/bin/goss
+
+curl -L https://github.com/goss-org/goss/releases/latest/download/dgoss -o /usr/local/bin/dgoss
+ 
+chmod +rx /usr/local/bin/dgoss
+
+**EPEL para rhel 8**
+subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+
+dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+yum install python3-jmespath 
+
+yum install python3.11-jmespath
+ 
+**Instalar el rol desde github**
+ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
+
+**NOTA** : Puede eliminar el rol completo con el siguiente comando (si así lo desea)
+rm -rf /root/.ansible/roles/RHEL8-CIS-OK
+
+
+**crear audit.yml y site.yml, estos se crearon en /root/site.yml y /root/audit.yml** 
+---
+**crear audit.yml** 
+
+- name: RHEL8 CIS Audit
+  hosts: all
+  become: true
+  roles:
+    - name: "RHEL8-CIS-OK"
+      vars:
+        setup_audit: true
+        run_audit: true
+
+**crear site.yml**
+---
+- name: Run RHEL8 CIS hardening
+  hosts: all
+  become: true
+
+  roles:
+
+      - role: "RHEL8-CIS-OK"
+  
+**Ejecutar auditoria** 
+cd /root/.ansible/roles/RHEL8-CIS-OK
+ansible-playbook -i "localhost," -c local audit.yml
+
+**Ver las reglas y tareas que se pueden ejecutarán**
+[root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --list-tags
+
+**ejecutar una regla en especifico** 
+[root@cis ~]# ansible-playbook -i "localhost," -c local site.yml --tags rule_1.1.1.3
+
+**Ejecutar el rol completo**
+[root@cis ~]# ansible-playbook -i "localhost," -c local site.yml
+
