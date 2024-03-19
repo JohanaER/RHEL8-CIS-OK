@@ -247,6 +247,7 @@ los siguientes pasos se sugieren para un servidor nuevo sin configuraciones para
 **Instalar las colecciones necesarias especificas:**
 
 ansible-galaxy collection install dsglaser.cis_security
+
 ansible-galaxy collection install ansible.posix
 
 **instalar goss:**
