@@ -280,23 +280,16 @@ rm -rf /root/.ansible/roles/RHEL8-CIS-OK
 **Crear audit.yml y site.yml, estos se crearon en /root/site.yml y /root/audit.yml** 
 
 **Crear audit.yml** 
-
+```yml
 - name: RHEL8 CIS Audit
-  
   hosts: all
-  
   become: true
-  
   roles:
-  
     - name: "RHEL8-CIS-OK"
-     
       vars:
-      
         setup_audit: true
-      
         run_audit: true
-
+```
 **Crear site.yml**
 
 - name: Run RHEL8 CIS hardening
