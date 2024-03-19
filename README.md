@@ -186,7 +186,7 @@ installonly_limit=3
 clean_requirements_on_remove=True
 best=True
 skip_if_unavailable=False
-**repo_gpgcheck=0**
+repo_gpgcheck=0
 ```
 
 ------------------
@@ -265,7 +265,7 @@ yum install python3-jmespath
 yum install python3.11-jmespath
 ```
 **Instalar el rol desde github**
-```txt
+```sh
 ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
 ```
 **NOTA** : Puede eliminar el rol completo con el siguiente comando (si así lo desea)
