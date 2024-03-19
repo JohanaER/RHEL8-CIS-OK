@@ -172,12 +172,18 @@ archivo del server
 vi /etc/dnf/dnf.conf
 
 [main]
+
 gpgcheck=0
+
 installonly_limit=3
+
 clean_requirements_on_remove=True
+
 best=True
+
 skip_if_unavailable=False
-repo_gpgcheck=0
+
+## repo_gpgcheck=0
 
 
 ------------------
