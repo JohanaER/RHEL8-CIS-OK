@@ -269,14 +269,13 @@ dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.r
 yum install python3-jmespath 
 
 yum install python3.11-jmespath
- 
+
 **Instalar el rol desde github**
 
 ansible-galaxy install git+https://github.com/JohanaER/RHEL8-CIS-OK.git
--------
+
 **NOTA** : Puede eliminar el rol completo con el siguiente comando (si así lo desea)
 rm -rf /root/.ansible/roles/RHEL8-CIS-OK
--------
 
 **crear audit.yml y site.yml, estos se crearon en /root/site.yml y /root/audit.yml** 
 ---
