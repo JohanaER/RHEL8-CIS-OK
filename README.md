@@ -165,7 +165,7 @@ fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to download met
 ```
 solucion: fuente : https://access.redhat.com/solutions/7019126
 
-**Modificacion del archivo /root/.ansible/roles/RHEL8-CIS/tasks/section_1/cis_1.2.x.yml**
+**Modificación del archivo /root/.ansible/roles/RHEL8-CIS/tasks/section_1/cis_1.2.x.yml**
 
 Linea 52 
 ```txt
@@ -236,7 +236,7 @@ This includes a huge thanks and credit to the original authors and maintainers.
 Josh Springer, Daniel Shepherd, Bas Meijeri, James Cassell, Mike Renfro, DFed, George Nalen, Mark Bolwell
 
 ## Pasos para servidor nuevo:
-los siguientes pasos se sugieren para un servidor nuevo sin configuraciones para evitar futuros errores :
+los siguientes pasos se sugieren en un servidor nuevo para evitar futuros errores:
 
     1  subscription-manager register 
     2  subscription-manager refresh 
