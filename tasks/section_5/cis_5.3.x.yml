@@ -32,6 +32,45 @@
             src: /var/lib/aide/aide.db.new.gz
             dest: /var/lib/aide/aide.db.gz
             remote_src: true
+
+
+- name: "5.3.2 | PATCH | Ensure filesystem integrity is regularly checked"
+  when:
+      - rhel8cis_rule_5_3_2
+      - rhel8cis_config_aide
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - aide
+      - NIST800-53R5_AU-2
+      - file_integrity
+      - patch
+      - rule_5.3.2
+  block:
+      - name: "5.3.2 | PATCH | Ensure filesystem integrity is regularly checked | cron"
+        when: rhel8cis_aide_scan == "cron"
+        ansible.builtin.cron:
+            name: Run AIDE integrity check
+            cron_file: "{{ rhel8cis_aide_cron['cron_file'] }}"
+            user: "{{ rhel8cis_aide_cron['cron_user'] }}"
+            minute: "{{ rhel8cis_aide_cron['aide_minute'] | default('0') }}"
+            hour: "{{ rhel8cis_aide_cron['aide_hour'] | default('5') }}"
+            day: "{{ rhel8cis_aide_cron['aide_day'] | default('*') }}"
+            month: "{{ rhel8cis_aide_cron['aide_month'] | default('*') }}"
+            weekday: "{{ rhel8cis_aide_cron['aide_weekday'] | default('*') }}"
+            job: "{{ rhel8cis_aide_cron['aide_job'] }}"
+
+      - name: "5.3.2 | PATCH | Ensure filesystem integrity is regularly checked | timer"
+        when: rhel8cis_aide_scan == "timer"
+        ansible.builtin.systemd:
+            name: "{{ item.name }}"
+            enabled: true
+            state: "{{ item.state | default(omit)}}"
+        loop:
+            - { name: 'aidecheck.service' }
+            - { name: 'aidecheck.timer', state: started }
+
 - name: "5.3.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when:
       - rhel8cis_rule_5_3_3
