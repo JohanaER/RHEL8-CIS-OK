@@ -29,7 +29,7 @@ This role was developed against a clean install of the Operating System. If you 
 To use release version please point to main branch and relevant release for the cis benchmark you wish to work with.
 
 If moving across major releases e.g. v2.0.0 - v3.0.0 there are significant changes to the benchmarks and controls it is suggested to start as a new standard not to upgrade.
-```bash
+```txt
 **Este rol esta modificado solo para algunas reglas especificas las cuales son las siguientes : 
 rule_1.1.1.3, rule_1.1.2.1.1, rule_1.1.2.3.3, rule_1.1.2.4.2, rule_1.1.2.4.3, rule_1.1.2.6.2, rule_1.1.2.6.3, rule_1.1.2.6.4, rule_1.1.2.7.2, rule_1.1.2.7.3, rule_1.1.2.7.4, rule_1.3.2, rule_1.4.2, rule_1.4.3, rule_1.4.4, rule_1.5.1.2, rule_1.5.1.6, rule_1.6.1, rule_1.6.2, rule_1.7.1, rule_1.7.4, rule_1.8.6, rule_2.1.2, rule_3.4.2.2, rule_3.4.2.5, rule_4.2.10, rule_4.2.11, rule_4.2.13, rule_4.2.14, rule_4.2.19, rule_4.2.20, rule_4.2.4, rule_4.2.7, rule_4.2.9, rule_4.3.6, rule_4.3.7, rule_4.4.2.1, rule_4.4.3.2.1, rule_4.4.3.2.4, rule_4.4.3.2.5, rule_4.4.3.2.7, rule_4.4.3.3.1, rule_4.4.3.3.2, rule_4.4.3.3.3, rule_4.5.1.2, rule_4.5.1.3, rule_4.5.1.4, rule_4.5.2.3, rule_4.5.3.2, rule_5.1.1.4, rule_5.1.2.1.4, rule_5.1.2.3, rule_5.1.2.4, rule_5.2.4.1, rule_5.2.4.2, rule_5.2.4.3, rule_5.2.4.4, rule_5.2.4.5, rule_5.2.4.6, rule_5.2.4.7, rule_5.3.1, rule_5.3.2, rule_5.3.3**
 ```
@@ -158,36 +158,36 @@ rhel8cis_rule_1_1_3_3
 Almalinux BaseOS, EPEL and many cloud providers repositories, do not allow repo_gpgcheck on rule_1.2.3 this will cause issues during the playbook unless or a workaround is found.
 
 -------------------
+**Error rule 1.2.5**
+```txt
 TASK [RHEL8-CIS : 1.2.5 | PATCH | Ensure updates, patches, and additional security software are installed | Patch] ***
 fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to download metadata for repo 'epel': GPG verification is enabled, but GPG signature is not available. This may be an error or the repository does not support GPG verification: Status code: 404 for http://mirrors.upr.edu/epel/8/Everything/x86_64/repodata/repomd.xml.asc (IP: 136.145.244.40)", "rc": 1, "results": []}
-
+```
 solucion: fuente : https://access.redhat.com/solutions/7019126
 
-*Modificacion del archivo /root/.ansible/roles/RHEL8-CIS/tasks/section_1/cis_1.2.x.yml
+**Modificacion del archivo /root/.ansible/roles/RHEL8-CIS/tasks/section_1/cis_1.2.x.yml**
 
 Linea 52 
+```txt
 #line: line: gpgcheck=1 --> line: gpgcheck=0 Modificacion
-
+```
 Linea 85
+```txt
 #line: line: gpgcheck=1 --> line: gpgcheck=0 Modificacion
-
+```
 archivo del server 
+```bash
 vi /etc/dnf/dnf.conf
-
+```
+```txt
 [main]
-
 gpgcheck=0
-
 installonly_limit=3
-
 clean_requirements_on_remove=True
-
 best=True
-
 skip_if_unavailable=False
-
 **repo_gpgcheck=0**
-
+```
 
 ------------------
 
