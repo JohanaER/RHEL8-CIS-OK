@@ -1,0 +1,16 @@
+---
+
+- name: "5.1.1.4 | PATCH | Ensure rsyslog default file permissions configured"
+  when:
+      - rhel8cis_rule_5_1_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rsyslog
+      - rule_5.1.1.4
+  notify: Restart_rsyslog
+  ansible.builtin.lineinfile:
+      path: /etc/rsyslog.conf
+      regexp: '^\$FileCreateMode'
+      line: '$FileCreateMode 0640'

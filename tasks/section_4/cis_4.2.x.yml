@@ -1,0 +1,209 @@
+---
+
+- name: "4.2.4 | PATCH | Ensure SSH access is configured"
+  when:
+      - rhel8cis_rule_4_2_4
+      - rhel8cis_sshd_limited
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
+      - rule_4.2.4
+  block:
+      - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowusers"
+        ansible.builtin.lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: "^AllowUsers"
+            line: AllowUsers {{ rhel8cis_sshd['allowusers'] }}
+        notify: Restart_sshd
+        when: "rhel8cis_sshd['allowusers']|default('') | length > 0"
+
+      - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
+        ansible.builtin.lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: "^AllowGroups"
+            line: AllowGroups {{ rhel8cis_sshd['allowgroups'] }}
+        notify: Restart_sshd
+        when: "rhel8cis_sshd['allowgroups']|default('') | length > 0"
+
+      - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
+        ansible.builtin.lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: "^DenyUsers"
+            line: DenyUsers {{ rhel8cis_sshd['denyusers'] }}
+        notify: Restart_sshd
+        when: "rhel8cis_sshd['denyusers']|default('') | length > 0"
+
+      - name: "4.2.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
+        ansible.builtin.lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: "^DenyGroups"
+            line: DenyGroups {{ rhel8cis_sshd['denygroups'] }}
+        notify: Restart_sshd
+        when: "rhel8cis_sshd['denygroups']|default('') | length > 0"
+
+- name: "4.2.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured"
+  when:
+      - rhel8cis_rule_4_2_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - rule_4.2.7
+  block:
+      - name: "4.2.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Add line in sshd_config for ClientAliveInterval"
+        ansible.builtin.lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: '^ClientAliveInterval'
+            line: "ClientAliveInterval {{ rhel8cis_sshd['clientaliveinterval'] }}"
+
+      - name: "4.2.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Ensure SSH ClientAliveCountMax set to <= 3"
+        ansible.builtin.lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: '^ClientAliveCountMax'
+            line: "ClientAliveCountMax {{ rhel8cis_sshd['clientalivecountmax'] }}"
+
+
+- name: "4.2.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
+  when:
+      - rhel8cis_rule_4_2_9
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - rule_4.2.9
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: ^#HostbasedAuthentication|^HostbasedAuthentication"
+      line: 'HostbasedAuthentication no'
+
+- name: "4.2.10 | PATCH | Ensure SSH IgnoreRhosts is enabled"
+  when:
+      - rhel8cis_rule_4_2_10
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - rule_4.2.10
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "^#IgnoreRhosts|^IgnoreRhosts"
+      line: 'IgnoreRhosts yes'
+
+- name: "4.2.11 | PATCH | Ensure sshd KexAlgorithms is configured"
+  when:
+      - rhel8cis_rule_4_2_11
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - kex
+      - NIST800-53R5_SC-8
+      - rule_4.2.11
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "^#KexAlgorithms|^KexAlgorithms"
+      line: "KexAlgorithms {{ rhel8cis_sshd['kex'] }}"
+
+- name: "4.2.13 | PATCH | Ensure sshd LogLevel is configured"
+  when:
+      - rhel8cis_rule_4_2_13
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - NIST800-53R5_AU-3
+      - NIST800-53R5_AU-12
+      - NIST800-53R5_SI-5
+      - rule_4.2.13
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "^#LogLevel|^LogLevel"
+      line: "LogLevel {{ rhel8cis_sshd['loglevel'] }}"
+
+- name: "4.2.14 | PATCH | Ensure sshd MACs are configured"
+  when:
+      - rhel8cis_rule_4_2_14
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - macs
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - rule_4.2.14
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "^#MACs|^MACs"
+      line: "MACs {{ rhel8cis_sshd['macs'] }}"
+
+
+- name: "4.2.19 | PATCH | Ensure sshd PermitRootLogin is disabled"
+  when:
+      - rhel8cis_rule_4_2_19
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - NIST800-53R5_AC-6
+      - rule_4.2.19
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "^#PermitRootLogin|^PermitRootLogin"
+      line: 'PermitRootLogin no'
+
+- name: "4.2.20 | PATCH | Ensure sshd PermitUserEnvironment is disabled"
+  ansible.builtin.lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "^#PermitUserEnvironment|^PermitUserEnvironment"
+      line: 'PermitUserEnvironment no'
+  when:
+      - rhel8cis_rule_4_2_20
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - ssh
+      - NIST800-53R5_CM-1
+      - NIST800-53R5_CM-2
+      - NIST800-53R5_CM-6
+      - NIST800-53R5_CM-7
+      - NIST800-53R5_IA-5
+      - rule_4.2.20

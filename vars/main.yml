@@ -1,0 +1,22 @@
+---
+# vars file for RHEL8-CIS
+
+min_ansible_version: 2.11.1
+rhel8cis_allowed_crypto_policies:
+    - 'DEFAULT'
+    - 'FUTURE'
+    - 'FIPS'
+
+rhel8cis_allowed_crypto_policies_modules:
+    - 'OSPP'
+    - 'AD-SUPPORT'
+
+# default setting, this should not be changed
+# and is overridden if a task that changed sets the value if required.
+reboot_required: false
+
+rhel8cis_legacy_boot: false
+
+# Used to control warning summary
+warn_control_list: ""
+warn_count: 0

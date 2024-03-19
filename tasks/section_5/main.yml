@@ -1,0 +1,15 @@
+---
+
+# 5.1 Configure Logging
+- name: "SECTION | 5.1.1.x | Configure rsyslog"
+  ansible.builtin.import_tasks:
+      file: cis_5.1.1.x.yml
+  when: rhel8cis_syslog == 'rsyslog'
+
+- name: "SECTION | 5.1.2.x | Configure journald"
+  ansible.builtin.import_tasks:
+      file: cis_5.1.2.x.yml
+
+- name: "SECTION | 5.3.x | Aide"
+  ansible.builtin.import_tasks:
+      file: cis_5.3.x.yml

@@ -1,0 +1,19 @@
+---
+
+- name: "1.8.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled"
+  when:
+      - rhel8cis_rule_1_8_6
+      - rhel8cis_gui
+  tags:
+      - level1-server
+      - level2-workstation
+      - patch
+      - gui
+      - rule_1.8.6
+  notify: Reload_dconf
+  ansible.builtin.template:
+      src: etc/dconf/db/00-media-automount.j2
+      dest: "/etc/dconf/db/{{ rhel8cis_dconf_db_name }}.d/00-media-automount"
+      owner: root
+      group: root
+      mode: '0644'

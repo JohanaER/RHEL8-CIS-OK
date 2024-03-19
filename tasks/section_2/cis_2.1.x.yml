@@ -1,0 +1,21 @@
+---
+
+- name: "2.1.2 | PATCH | Ensure chrony is configured"
+  when:
+      - rhel8cis_time_synchronization == "chrony"
+      - rhel8cis_rule_2_1_2
+      - not system_is_container
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - NIST800-53R5_AU-3
+      - NIST800-53R5_AU-12
+      - rule_2.1.2
+  ansible.builtin.template:
+      src: chrony.conf.j2
+      dest: /etc/chrony.conf
+      owner: root
+      group: root
+      mode: '0644'
+

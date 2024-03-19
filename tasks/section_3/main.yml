@@ -1,0 +1,5 @@
+---
+
+- name: "SECTION | 3.4.2.x | Configure firewall rules"
+  ansible.builtin.import_tasks:
+      file: cis_3.4.2.x.yml

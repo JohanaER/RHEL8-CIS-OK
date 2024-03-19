@@ -1,0 +1,56 @@
+---
+
+- name: "5.1.2.1.4 | PATCH | Ensure journald is not configured to recieve logs from a remote client"
+  when:
+      - not rhel8cis_system_is_log_server
+      - rhel8cis_rule_5_1_2_1_4
+      - rhel8cis_syslog == 'journald'
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - journald
+      - rule_5.1.2.1.4
+  ansible.builtin.systemd:
+      name: systemd-journal-remote.socket
+      state: stopped
+      enabled: false
+      masked: true
+
+- name: "5.1.2.3 | PATCH | Ensure journald is configured to compress large log files"
+  when:
+      - rhel8cis_rule_5_1_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - journald
+      - rule_5.1.2.3
+  notify: Restart_journald
+  ansible.builtin.lineinfile:
+      path: /etc/systemd/journald.conf
+      regexp: 'Compress='
+      line: Compress=yes
+      insertafter: ^#Compress
+      validate: /usr/bin/bash -n %s
+
+- name: "5.1.2.4 | PATCH | Ensure journald is configured to write logfiles to persistent disk"
+  when:
+      - rhel8cis_rule_5_1_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - journald
+      - rule_5.1.2.4
+  notify: Restart_journald
+  ansible.builtin.lineinfile:
+      path: /etc/systemd/journald.conf
+      regexp: 'Storage='
+      line: Storage=persistent
+      state: present
+      insertafter: ^#Storage
+      validate: /usr/bin/bash -n %s

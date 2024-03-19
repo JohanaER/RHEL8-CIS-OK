@@ -1,0 +1,50 @@
+---
+
+- name: "4.5.2.3 | PATCH | Ensure system accounts are secured"
+  when:
+      - rhel8cis_rule_4_5_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - NIST800-53R5_AC-2
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_AC-11
+      - NIST800-53R5_MP-2
+      - shadow_suite
+      - rule_4.5.2.3
+  block:
+      - name: "4.5.2.3 | PATCH | | Ensure system accounts are secured | Set nologin"
+        when:
+            - item.id != "root"
+            - item.id != "sync"
+            - item.id != "shutdown"
+            - item.id != "halt"
+            - item.id != "nfsnobody"
+            - item.uid < rhel8cis_min_uid | int
+            - item.shell != "      /bin/false"
+            - item.shell != "      /usr/sbin/nologin"
+        ansible.builtin.user:
+            name: "{{ item.id }}"
+            shell: /usr/sbin/nologin
+        loop: "{{ rhel8cis_passwd }}"
+        loop_control:
+            label: "{{ item.id }}"
+
+      - name: "4.5.2.3 | PATCH | | Ensure system accounts are secured | Lock accounts"
+        when:
+            - item.id != "root"
+            - item.id != "sync"
+            - item.id != "shutdown"
+            - item.id != "halt"
+            - item.id != "nfsnobody"
+            - item.uid < rhel8cis_min_uid | int
+            - item.shell != "      /bin/false"
+            - item.shell != "      /usr/sbin/nologin"
+        ansible.builtin.user:
+            name: "{{ item.id }}"
+            password_lock: true
+        loop: "{{ rhel8cis_passwd }}"
+        loop_control:
+            label: "{{ item.id }}"

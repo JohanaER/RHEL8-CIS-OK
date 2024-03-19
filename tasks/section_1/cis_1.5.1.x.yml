@@ -1,0 +1,54 @@
+---
+
+- name: "1.5.1.2 | PATCH | Ensure SELinux is not disabled in bootloader configuration"
+  when:
+      - rhel8cis_rule_1_5_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
+      - rule_1.5.1.2
+  notify: Rebuild_grub
+  ansible.builtin.replace:
+      path: /etc/default/grub
+      regexp: '(selinux|enforcing)\s*=\s*0\s*'
+      replace: ''
+  register: selinux_grub_patch
+  ignore_errors: true  # noqa ignore-errors
+
+- name: "1.5.1.6 | AUDIT | Ensure no unconfined services exist"
+  when:
+      - rhel8cis_rule_1_5_1_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - services
+      - NIST800-53R5_AC-3
+      - NIST800-53R5_MP-2
+      - rule_1.5.1.6
+  vars:
+      warn_control_id: '1.5.1.6'
+  block:
+      - name: "1.5.1.6 | AUDIT | Ensure no unconfined services exist | Find the unconfined services"
+        ansible.builtin.shell: ps -eZ | grep unconfined_service_t | egrep -vw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
+        register: rhel8cis_1_5_1_6_unconf_services
+        failed_when: false
+        changed_when: false
+
+      - name: "1.5.1.6 | WARN | Ensure no unconfined services exist | Message on unconfined services"
+        when:
+            - rhel8cis_1_5_1_6_unconf_services is defined
+            - rhel8cis_1_5_1_6_unconf_services.stdout | length > 0
+        ansible.builtin.debug:
+            msg: "Warning!! You have unconfined services: {{ rhel8cis_1_5_1_6_unconf_services.stdout_lines }}"
+
+      - name: "1.5.1.6 | WARN | Ensure no unconfined services exist | warning count"
+        when:
+            - rhel8cis_1_5_1_6_unconf_services is defined
+            - rhel8cis_1_5_1_6_unconf_services.stdout | length > 0
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
